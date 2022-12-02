@@ -29,3 +29,48 @@ def test_day1_2():
     all_elves.sort()
     top_three = sum(all_elves[-3:])
     print(f'Top three: {top_three}')
+
+
+def test_day2_1():
+    with open(f'{INPUT_DIR}/day2/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    # X=1, Y=2, Z=3
+    # A,X=Rock, B,Y=Paper, C,Z=Scissors
+    GAME_TO_SCORE = {
+        'A X': 4,
+        'A Y': 8,
+        'A Z': 3,
+        'B X': 1,
+        'B Y': 5,
+        'B Z': 9,
+        'C X': 7,
+        'C Y': 2,
+        'C Z': 6,
+    }
+
+    results = [GAME_TO_SCORE[round] for round in lines]
+    print(f'Total score according to strategy: {sum(results)}')
+
+
+def test_day2_2():
+    with open(f'{INPUT_DIR}/day2/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    # Rock=1, Paper=2, Scissors=3
+    # A=Rock, B=Paper, C=Scissors
+    # X=lose, Y=draw, Z=win
+    GAME_TO_SCORE = {
+        'A X': 3,
+        'A Y': 4,
+        'A Z': 8,
+        'B X': 1,
+        'B Y': 5,
+        'B Z': 9,
+        'C X': 2,
+        'C Y': 6,
+        'C Z': 7,
+    }
+
+    results = [GAME_TO_SCORE[round] for round in lines]
+    print(f'Total score according to new strategy: {sum(results)}')
