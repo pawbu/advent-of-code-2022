@@ -1,3 +1,5 @@
+import string
+
 INPUT_DIR = 'tests/input'
 
 
@@ -74,3 +76,28 @@ def test_day2_2():
 
     results = [GAME_TO_SCORE[round] for round in lines]
     print(f'Total score according to new strategy: {sum(results)}')
+
+
+def test_day3_1():
+    with open(f'{INPUT_DIR}/day3/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    items = [(line[:int((len(line)-1)/2)+1], line[int((len(line)-1)/2)+1:]) for line in lines]
+    common_items = [set(list(i[0])) & set(list(i[1])) for i in items]
+
+    alphabet = list(string.ascii_lowercase) + list(string.ascii_uppercase)
+    priorities = [alphabet.index(i.pop())+1 for i in common_items]
+    print(f'Sum of the priorities of item types: {sum(priorities)}')
+
+
+def test_day3_2():
+    with open(f'{INPUT_DIR}/day3/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    common_items = []
+    for i in range(0, len(lines), 3):
+        common_items.append(set(list(lines[i])) & set(list(lines[i+1])) & set(list(lines[i+2])))
+
+    alphabet = list(string.ascii_lowercase) + list(string.ascii_uppercase)
+    priorities = [alphabet.index(i.pop())+1 for i in common_items]
+    print(f'Part two: Sum of the priorities of item types of each three-Elf group: {sum(priorities)}')
