@@ -82,11 +82,11 @@ def test_day3_1():
     with open(f'{INPUT_DIR}/day3/input', encoding='utf-8') as f:
         lines = [line.strip() for line in f]
 
-    items = [(line[:int((len(line)-1)/2)+1], line[int((len(line)-1)/2)+1:]) for line in lines]
+    items = [(line[:int((len(line) - 1) / 2) + 1], line[int((len(line) - 1) / 2) + 1:]) for line in lines]
     common_items = [set(list(i[0])) & set(list(i[1])) for i in items]
 
     alphabet = list(string.ascii_lowercase) + list(string.ascii_uppercase)
-    priorities = [alphabet.index(i.pop())+1 for i in common_items]
+    priorities = [alphabet.index(i.pop()) + 1 for i in common_items]
     print(f'Sum of the priorities of item types: {sum(priorities)}')
 
 
@@ -96,8 +96,60 @@ def test_day3_2():
 
     common_items = []
     for i in range(0, len(lines), 3):
-        common_items.append(set(list(lines[i])) & set(list(lines[i+1])) & set(list(lines[i+2])))
+        common_items.append(set(list(lines[i])) & set(list(lines[i + 1])) & set(list(lines[i + 2])))
 
     alphabet = list(string.ascii_lowercase) + list(string.ascii_uppercase)
-    priorities = [alphabet.index(i.pop())+1 for i in common_items]
+    priorities = [alphabet.index(i.pop()) + 1 for i in common_items]
     print(f'Part two: Sum of the priorities of item types of each three-Elf group: {sum(priorities)}')
+
+
+def test_day4_1():
+    with open(f'{INPUT_DIR}/day4/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    elf_pairs = [l.split(',') for l in lines]
+    elf_ranges = [(pair[0].split('-'), pair[1].split('-')) for pair in elf_pairs]
+    elf_ranges_enumerated = [
+        (
+            list(range(int(pair[0][0]), int(pair[0][1]) + 1)),
+            list(range(int(pair[1][0]), int(pair[1][1]) + 1))
+        )
+        for pair in elf_ranges
+    ]
+    elf_ranges_sets = [
+        (set(pair[0]), set(pair[1]))
+        for pair in elf_ranges_enumerated
+    ]
+    count = [
+        1
+        for pair in elf_ranges_sets
+        if len(pair[0] - pair[1]) == 0 or len(pair[1] - pair[0]) == 0
+    ]
+
+    print(f'Assignment pairs meeting condition: {sum(count)}')
+
+
+def test_day4_2():
+    with open(f'{INPUT_DIR}/day4/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    elf_pairs = [l.split(',') for l in lines]
+    elf_ranges = [(pair[0].split('-'), pair[1].split('-')) for pair in elf_pairs]
+    elf_ranges_enumerated = [
+        (
+            list(range(int(pair[0][0]), int(pair[0][1]) + 1)),
+            list(range(int(pair[1][0]), int(pair[1][1]) + 1))
+        )
+        for pair in elf_ranges
+    ]
+    elf_ranges_sets = [
+        (set(pair[0]), set(pair[1]))
+        for pair in elf_ranges_enumerated
+    ]
+    count = [
+        1
+        for pair in elf_ranges_sets
+        if len(pair[0].intersection(pair[1])) > 0
+    ]
+
+    print(f'Assignment pairs where ranges overlap: {sum(count)}')
