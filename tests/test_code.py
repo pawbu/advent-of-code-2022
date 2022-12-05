@@ -153,3 +153,63 @@ def test_day4_2():
     ]
 
     print(f'Assignment pairs where ranges overlap: {sum(count)}')
+
+
+def test_day5_1():
+    with open(f'{INPUT_DIR}/day5/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    lines = lines[10:]
+    stacks = [
+        ['V', 'C', 'D', 'R', 'Z', 'G', 'B', 'W'],
+        ['G', 'W', 'F', 'C', 'B', 'S', 'T', 'V'],
+        ['C', 'B', 'S', 'N', 'W'],
+        ['Q', 'G', 'M', 'N', 'J', 'V', 'C', 'P'],
+        ['T', 'S', 'L', 'F', 'D', 'H', 'B'],
+        ['J', 'V', 'T', 'W', 'M', 'N'],
+        ['P', 'F', 'L', 'C', 'S', 'T', 'G'],
+        ['B', 'D', 'Z'],
+        ['M', 'N', 'Z', 'W']
+    ]
+
+    for line in lines:
+        numbers = [n for n in line.split(' ') if n.isdigit()]
+        quantity = int(numbers[0])
+        move_from = int(numbers[1])-1
+        move_to = int(numbers[2])-1
+        for x in range(0, quantity):
+            crate = stacks[move_from].pop()
+            stacks[move_to].append(crate)
+
+    result = [stack.pop() for stack in stacks]
+    print(f'Crates on top: {"".join(result)}')
+
+
+def test_day5_2():
+    with open(f'{INPUT_DIR}/day5/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    lines = lines[10:]
+    stacks = [
+        ['V', 'C', 'D', 'R', 'Z', 'G', 'B', 'W'],
+        ['G', 'W', 'F', 'C', 'B', 'S', 'T', 'V'],
+        ['C', 'B', 'S', 'N', 'W'],
+        ['Q', 'G', 'M', 'N', 'J', 'V', 'C', 'P'],
+        ['T', 'S', 'L', 'F', 'D', 'H', 'B'],
+        ['J', 'V', 'T', 'W', 'M', 'N'],
+        ['P', 'F', 'L', 'C', 'S', 'T', 'G'],
+        ['B', 'D', 'Z'],
+        ['M', 'N', 'Z', 'W']
+    ]
+
+    for line in lines:
+        numbers = [n for n in line.split(' ') if n.isdigit()]
+        quantity = int(numbers[0])
+        move_from = int(numbers[1])-1
+        move_to = int(numbers[2])-1
+        crates = stacks[move_from][-quantity:]
+        del stacks[move_from][-quantity:]
+        stacks[move_to] = stacks[move_to] + crates
+
+    result = [stack.pop() for stack in stacks]
+    print(f'Crates on top by CrateMover 9001: {"".join(result)}')
