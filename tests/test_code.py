@@ -213,3 +213,27 @@ def test_day5_2():
 
     result = [stack.pop() for stack in stacks]
     print(f'Crates on top by CrateMover 9001: {"".join(result)}')
+
+
+def test_day6_1():
+    with open(f'{INPUT_DIR}/day6/input', encoding='utf-8') as f:
+        input = f.read()
+
+    buffer = []
+    for index, i in enumerate(input):
+        if len(set(buffer[-4:])) == 4:
+            print(f'First start-of-packet marker detected after {index}')
+            break
+        buffer += i
+
+
+def test_day6_2():
+    with open(f'{INPUT_DIR}/day6/input', encoding='utf-8') as f:
+        input = f.read()
+
+    buffer = []
+    for index, i in enumerate(input):
+        if len(set(buffer[-14:])) == 14:
+            print(f'First start-of-message marker detected after {index}')
+            break
+        buffer += i
