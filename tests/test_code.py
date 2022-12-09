@@ -1,4 +1,6 @@
+import os
 import string
+from pathlib import Path
 
 INPUT_DIR = 'tests/input'
 
@@ -237,3 +239,60 @@ def test_day6_2():
             print(f'First start-of-message marker detected after {index}')
             break
         buffer += i
+
+
+def test_day7():
+    with open(f'{INPUT_DIR}/day7/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    def is_command(line):
+        return line.startswith('$')
+
+    def get_size(start_path):
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(start_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+
+        return total_size
+
+    i = 1
+    path = Path('./tests/my_root')
+    path.mkdir()
+    dirs = [path]
+    while i < len(lines):
+        line = lines[i]
+        if is_command(line):
+            if 'cd ..' in line:
+                path = path.parent
+            if 'cd ' in line and 'cd ..' not in line:
+                path = path / (line.split(' ')[2])
+            if 'ls' in line:
+                i += 1
+                line = lines[i]
+                while not is_command(line):
+                    if 'dir ' in line:
+                        p: Path = (path / line.split(' ')[1])
+                        p.mkdir()
+                        dirs.append(p)
+                    else:
+                        (size, file_name) = line.split(' ')
+                        with open(path / file_name, 'wb') as f:
+                            f.write(bytearray(int(size)))
+                    i += 1
+                    if i == 934:
+                        break
+                    line = lines[i]
+                i -= 1
+        i += 1
+
+    result = [get_size(dir) for dir in dirs if get_size(dir) <= 100000]
+    print(f'Part 1: the sum of the total sizes of those directories: {sum(result)}')
+
+    total_size_outermost_dir = get_size(Path('./tests/my_root'))
+    free_space_now = 70000000 - total_size_outermost_dir
+    free_space_needed = 30000000 - free_space_now
+    result = [(dir, get_size(dir)) for dir in dirs if get_size(dir) >= free_space_needed]
+
+    print(f'Part 2: the sum of the total sizes of those directories: {min(result,key=lambda item:item[1])}')
