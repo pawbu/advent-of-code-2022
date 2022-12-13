@@ -177,8 +177,8 @@ def test_day5_1():
     for line in lines:
         numbers = [n for n in line.split(' ') if n.isdigit()]
         quantity = int(numbers[0])
-        move_from = int(numbers[1])-1
-        move_to = int(numbers[2])-1
+        move_from = int(numbers[1]) - 1
+        move_to = int(numbers[2]) - 1
         for x in range(0, quantity):
             crate = stacks[move_from].pop()
             stacks[move_to].append(crate)
@@ -207,8 +207,8 @@ def test_day5_2():
     for line in lines:
         numbers = [n for n in line.split(' ') if n.isdigit()]
         quantity = int(numbers[0])
-        move_from = int(numbers[1])-1
-        move_to = int(numbers[2])-1
+        move_from = int(numbers[1]) - 1
+        move_to = int(numbers[2]) - 1
         crates = stacks[move_from][-quantity:]
         del stacks[move_from][-quantity:]
         stacks[move_to] = stacks[move_to] + crates
@@ -241,58 +241,187 @@ def test_day6_2():
         buffer += i
 
 
-def test_day7():
-    with open(f'{INPUT_DIR}/day7/input', encoding='utf-8') as f:
+# def test_day7():
+#     with open(f'{INPUT_DIR}/day7/input', encoding='utf-8') as f:
+#         lines = [line.strip() for line in f]
+#
+#     def is_command(line):
+#         return line.startswith('$')
+#
+#     def get_size(start_path):
+#         total_size = 0
+#         for dirpath, dirnames, filenames in os.walk(start_path):
+#             for f in filenames:
+#                 fp = os.path.join(dirpath, f)
+#                 total_size += os.path.getsize(fp)
+#
+#         return total_size
+#
+#     i = 1
+#     path = Path('./tests/my_root')
+#     path.mkdir()
+#     dirs = [path]
+#     while i < len(lines):
+#         line = lines[i]
+#         if is_command(line):
+#             if 'cd ..' in line:
+#                 path = path.parent
+#             if 'cd ' in line and 'cd ..' not in line:
+#                 path = path / (line.split(' ')[2])
+#             if 'ls' in line:
+#                 i += 1
+#                 line = lines[i]
+#                 while not is_command(line):
+#                     if 'dir ' in line:
+#                         p: Path = (path / line.split(' ')[1])
+#                         p.mkdir()
+#                         dirs.append(p)
+#                     else:
+#                         (size, file_name) = line.split(' ')
+#                         with open(path / file_name, 'wb') as f:
+#                             f.write(bytearray(int(size)))
+#                     i += 1
+#                     if i == 934:
+#                         break
+#                     line = lines[i]
+#                 i -= 1
+#         i += 1
+#
+#     result = [get_size(dir) for dir in dirs if get_size(dir) <= 100000]
+#     print(f'Part 1: the sum of the total sizes of those directories: {sum(result)}')
+#
+#     total_size_outermost_dir = get_size(Path('./tests/my_root'))
+#     free_space_now = 70000000 - total_size_outermost_dir
+#     free_space_needed = 30000000 - free_space_now
+#     result = [(dir, get_size(dir)) for dir in dirs if get_size(dir) >= free_space_needed]
+#
+#     print(f'Part 2: the sum of the total sizes of those directories: {min(result,key=lambda item:item[1])}')
+
+
+def test_day8_1():
+    with open(f'{INPUT_DIR}/day8/input', encoding='utf-8') as f:
         lines = [line.strip() for line in f]
 
-    def is_command(line):
-        return line.startswith('$')
+    trees = [[int(height) for height in list(line)] for line in lines]
+    # print(trees)
+    max_y = len(trees)-1
+    max_x = len(trees)-1
 
-    def get_size(start_path):
-        total_size = 0
-        for dirpath, dirnames, filenames in os.walk(start_path):
-            for f in filenames:
-                fp = os.path.join(dirpath, f)
-                total_size += os.path.getsize(fp)
+    def visible_north(y, x):
+        i = y-1
+        while i >= 0:
+            if trees[x][i] >= trees[x][y]:
+                return False
+            i -= 1
+        return True
 
-        return total_size
+    def visible_south(y, x):
+        i = y+1
+        while i <= max_y:
+            if trees[x][i] >= trees[x][y]:
+                return False
+            i += 1
+        return True
 
-    i = 1
-    path = Path('./tests/my_root')
-    path.mkdir()
-    dirs = [path]
-    while i < len(lines):
-        line = lines[i]
-        if is_command(line):
-            if 'cd ..' in line:
-                path = path.parent
-            if 'cd ' in line and 'cd ..' not in line:
-                path = path / (line.split(' ')[2])
-            if 'ls' in line:
-                i += 1
-                line = lines[i]
-                while not is_command(line):
-                    if 'dir ' in line:
-                        p: Path = (path / line.split(' ')[1])
-                        p.mkdir()
-                        dirs.append(p)
-                    else:
-                        (size, file_name) = line.split(' ')
-                        with open(path / file_name, 'wb') as f:
-                            f.write(bytearray(int(size)))
-                    i += 1
-                    if i == 934:
-                        break
-                    line = lines[i]
-                i -= 1
-        i += 1
+    def visible_east(y, x):
+        i = x+1
+        while i <= max_x:
+            if trees[i][y] >= trees[x][y]:
+                return False
+            i += 1
+        return True
 
-    result = [get_size(dir) for dir in dirs if get_size(dir) <= 100000]
-    print(f'Part 1: the sum of the total sizes of those directories: {sum(result)}')
+    def visible_west(y, x):
+        i = x-1
+        while i >= 0:
+            if trees[i][y] >= trees[x][y]:
+                return False
+            i -= 1
+        return True
 
-    total_size_outermost_dir = get_size(Path('./tests/my_root'))
-    free_space_now = 70000000 - total_size_outermost_dir
-    free_space_needed = 30000000 - free_space_now
-    result = [(dir, get_size(dir)) for dir in dirs if get_size(dir) >= free_space_needed]
+    def is_visible(y, x):
+        result = None
+        if visible_north(y, x) or visible_south(y, x) \
+                or visible_east(y, x) or visible_west(y, x):
+            result = True
+        else:
+            result = False
 
-    print(f'Part 2: the sum of the total sizes of those directories: {min(result,key=lambda item:item[1])}')
+        # print(f'y{y}x{x} height: {trees[y][x]}, visible: {result}')
+        return result
+
+    visible_trees = len(trees[0]) * 2 - 4 + len(trees) * 2
+
+    for y in range(1, len(trees)-1):
+        for x in range(1, len(trees[y])-1):
+            if is_visible(y, x):
+                visible_trees += 1
+    print(f"Trees visible from outside the grid: {visible_trees}")
+
+
+def test_day8_2():
+    with open(f'{INPUT_DIR}/day8/input', encoding='utf-8') as f:
+        lines = [line.strip() for line in f]
+
+    trees = [[int(height) for height in list(line)] for line in lines]
+    max_y = len(trees)-1
+    max_x = len(trees)-1
+
+    def trees_north(y, x):
+        i = y-1
+        counter = 0
+        while i >= 0:
+            if trees[i][x] < trees[y][x]:
+                counter += 1
+            if trees[i][x] >= trees[y][x]:
+                counter += 1
+                return counter
+            i -= 1
+        return 1 if counter == 0 else counter
+
+    def trees_south(y, x):
+        i = y+1
+        counter = 0
+        while i <= max_y:
+            if trees[i][x] < trees[y][x]:
+                counter += 1
+            if trees[i][x] >= trees[y][x]:
+                counter += 1
+                return counter
+            i += 1
+        return 1 if counter == 0 else counter
+
+    def trees_east(y, x):
+        i = x+1
+        counter = 0
+        while i <= max_x:
+            if trees[y][i] < trees[y][x]:
+                counter += 1
+            if trees[y][i] >= trees[y][x]:
+                counter += 1
+                return counter
+            i += 1
+        return 1 if counter == 0 else counter
+
+    def trees_west(y, x):
+        i = x-1
+        counter = 0
+        while i >= 0:
+            if trees[y][i] < trees[y][x]:
+                counter += 1
+            if trees[y][i] >= trees[y][x]:
+                counter += 1
+                return counter
+            i -= 1
+        return 1 if counter == 0 else counter
+
+    def count_scenic_score(y, x):
+        score = trees_north(y, x) * trees_south(y, x) * trees_east(y, x) * trees_west(y, x)
+        return score
+
+    highest_scenic_score = 0
+    for y in range(1, len(trees)-1):
+        for x in range(1, len(trees[y])-1):
+            highest_scenic_score = max(highest_scenic_score, count_scenic_score(y, x))
+
+    print(f"Tree with highest scenic score: {highest_scenic_score}")
