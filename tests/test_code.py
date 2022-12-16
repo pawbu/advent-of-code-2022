@@ -425,3 +425,75 @@ def test_day8_2():
             highest_scenic_score = max(highest_scenic_score, count_scenic_score(y, x))
 
     print(f"Tree with highest scenic score: {highest_scenic_score}")
+
+
+def test_day10_1():
+    with open(f'{INPUT_DIR}/day10/input', encoding='utf-8') as f:
+        instructions = [line.strip() for line in f]
+
+    cycle_no = 1
+    instr_no = 0
+    x = 1
+    cycle_to_x = {}
+
+    while instr_no < len(instructions):
+        instruction = instructions[instr_no]
+
+        if instruction == 'noop':
+            cycle_to_x[cycle_no] = x
+            cycle_no += 1
+            instr_no += 1
+        else:
+            cycle_to_x[cycle_no] = x
+            cycle_no += 1
+            cycle_to_x[cycle_no] = x
+            x += int(instruction.split(' ')[1])
+            cycle_no += 1
+            instr_no += 1
+
+    sum = cycle_to_x[20]*20 + cycle_to_x[60]*60 + cycle_to_x[100]*100 + cycle_to_x[140]*140 \
+        + cycle_to_x[180]*180 + cycle_to_x[220]*220
+    print(f'Sum of six signal strengths: {sum}')
+
+
+def test_day10_2():
+    with open(f'{INPUT_DIR}/day10/input', encoding='utf-8') as f:
+        instructions = [line.strip() for line in f]
+
+    cycle_no = 1
+    instr_no = 0
+    x = 1
+    cycle_to_x = {}
+    crt_row = []
+
+    def print_crt_row(crt_row, cycle_no, x):
+        if ((cycle_no-1) % 40) in list(range(x - 1, x + 2)):
+            crt_row.append("#")
+        else:
+            crt_row.append(".")
+
+    while instr_no < len(instructions):
+        print_crt_row(crt_row, cycle_no, x)
+
+        instruction = instructions[instr_no]
+
+        if instruction == 'noop':
+            cycle_to_x[cycle_no] = x
+            cycle_no += 1
+            instr_no += 1
+        else:
+            cycle_to_x[cycle_no] = x
+            cycle_no += 1
+            cycle_to_x[cycle_no] = x
+            print_crt_row(crt_row, cycle_no, x)
+            x += int(instruction.split(' ')[1])
+            cycle_no += 1
+            instr_no += 1
+
+    print("".join(crt_row[0:40]))
+    print("".join(crt_row[40:80]))
+    print("".join(crt_row[80:120]))
+    print("".join(crt_row[120:160]))
+    print("".join(crt_row[160:200]))
+    print("".join(crt_row[200:240]))
+    # EKRHEPUZ
